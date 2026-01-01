@@ -1,0 +1,359 @@
+{
+  "time_periods": [
+    {
+      "year": 0,
+      "name": "Present Day",
+      "description": "Current interglacial period (Holocene)",
+      "epoch": "Holocene",
+      "era": "Cenozoic",
+      "sea_level_m": 0,
+      "global_temp_c": 0,
+      "ice_coverage_pct": 10.0,
+      "co2_ppm": 420,
+      "texture_key": "present",
+      "notable_features": [
+        "Modern coastlines",
+        "Antarctic and Greenland ice sheets",
+        "Current ocean circulation patterns"
+      ]
+    },
+    {
+      "year": -6000,
+      "name": "Holocene Climatic Optimum",
+      "description": "Warmest period of the Holocene",
+      "epoch": "Holocene",
+      "era": "Cenozoic",
+      "sea_level_m": 2,
+      "global_temp_c": 1,
+      "ice_coverage_pct": 9.0,
+      "co2_ppm": 265,
+      "texture_key": "holocene_optimum",
+      "notable_features": [
+        "Sahara was green savanna",
+        "Slightly higher sea levels",
+        "Reduced Arctic sea ice"
+      ]
+    },
+    {
+      "year": -12000,
+      "name": "End of Last Ice Age",
+      "description": "Transition from Pleistocene to Holocene",
+      "epoch": "Pleistocene",
+      "era": "Cenozoic",
+      "sea_level_m": -60,
+      "global_temp_c": -4,
+      "ice_coverage_pct": 25.0,
+      "co2_ppm": 240,
+      "texture_key": "late_glacial",
+      "notable_features": [
+        "Rapid deglaciation beginning",
+        "Beringia land bridge still partially exposed",
+        "Great Lakes forming"
+      ]
+    },
+    {
+      "year": -20000,
+      "name": "Last Glacial Maximum (LGM)",
+      "description": "Peak of the last ice age",
+      "epoch": "Pleistocene",
+      "era": "Cenozoic",
+      "sea_level_m": -120,
+      "global_temp_c": -6,
+      "ice_coverage_pct": 30.0,
+      "co2_ppm": 180,
+      "texture_key": "lgm",
+      "notable_features": [
+        "Laurentide Ice Sheet covers Canada",
+        "Beringia land bridge connects Asia to Americas",
+        "British Isles connected to Europe",
+        "Exposed Sunda Shelf (Southeast Asia)"
+      ]
+    },
+    {
+      "year": -50000,
+      "name": "Middle Wisconsin",
+      "description": "Interstadial period during last ice age",
+      "epoch": "Pleistocene",
+      "era": "Cenozoic",
+      "sea_level_m": -80,
+      "global_temp_c": -4,
+      "ice_coverage_pct": 22.0,
+      "co2_ppm": 210,
+      "texture_key": "mid_wisconsin",
+      "notable_features": [
+        "Partial ice retreat",
+        "Human migration out of Africa underway",
+        "Neanderthals in Europe"
+      ]
+    },
+    {
+      "year": -75000,
+      "name": "Marine Isotope Stage 4",
+      "description": "Severe glacial period",
+      "epoch": "Pleistocene",
+      "era": "Cenozoic",
+      "sea_level_m": -100,
+      "global_temp_c": -5.5,
+      "ice_coverage_pct": 28.0,
+      "co2_ppm": 195,
+      "texture_key": "mis4",
+      "notable_features": [
+        "Toba volcanic eruption aftermath (~74ka)",
+        "Possible human population bottleneck",
+        "Extensive ice sheets"
+      ]
+    },
+    {
+      "year": -130000,
+      "name": "Eemian Interglacial",
+      "description": "Last interglacial period, warmer than present",
+      "epoch": "Pleistocene",
+      "era": "Cenozoic",
+      "sea_level_m": 6,
+      "global_temp_c": 2,
+      "ice_coverage_pct": 8.0,
+      "co2_ppm": 285,
+      "texture_key": "eemian",
+      "notable_features": [
+        "Hippopotamuses in Britain",
+        "Reduced Greenland ice sheet",
+        "Higher sea levels than present",
+        "Forests extended to Arctic"
+      ]
+    },
+    {
+      "year": -200000,
+      "name": "Marine Isotope Stage 7",
+      "description": "Interglacial period",
+      "epoch": "Pleistocene",
+      "era": "Cenozoic",
+      "sea_level_m": 0,
+      "global_temp_c": 0.5,
+      "ice_coverage_pct": 11.0,
+      "co2_ppm": 260,
+      "texture_key": "mis7",
+      "notable_features": [
+        "Early Homo sapiens in Africa",
+        "Similar climate to present",
+        "Moderate ice coverage"
+      ]
+    },
+    {
+      "year": -300000,
+      "name": "Marine Isotope Stage 9",
+      "description": "Warm interglacial period",
+      "epoch": "Pleistocene",
+      "era": "Cenozoic",
+      "sea_level_m": 3,
+      "global_temp_c": 1.5,
+      "ice_coverage_pct": 9.0,
+      "co2_ppm": 280,
+      "texture_key": "mis9",
+      "notable_features": [
+        "Homo heidelbergensis widespread",
+        "Slightly warmer than present",
+        "Early use of fire evidence"
+      ]
+    },
+    {
+      "year": -400000,
+      "name": "Marine Isotope Stage 11",
+      "description": "Exceptionally long and warm interglacial",
+      "epoch": "Pleistocene",
+      "era": "Cenozoic",
+      "sea_level_m": 10,
+      "global_temp_c": 2.5,
+      "ice_coverage_pct": 7.0,
+      "co2_ppm": 290,
+      "texture_key": "mis11",
+      "notable_features": [
+        "Longest interglacial of last 500ka",
+        "Significant West Antarctic ice loss",
+        "Best analog for future climate scenarios"
+      ]
+    },
+    {
+      "year": -500000,
+      "name": "Marine Isotope Stage 13",
+      "description": "Moderate interglacial period",
+      "epoch": "Pleistocene",
+      "era": "Cenozoic",
+      "sea_level_m": -20,
+      "global_temp_c": -1,
+      "ice_coverage_pct": 15.0,
+      "co2_ppm": 240,
+      "texture_key": "mis13",
+      "notable_features": [
+        "Homo erectus widespread",
+        "Cooler interglacial",
+        "Moderate ice extent"
+      ]
+    }
+  ],
+  "geological_events": [
+    {
+      "year": -74000,
+      "name": "Toba Supervolcano Eruption",
+      "type": "volcanic",
+      "description": "Massive volcanic eruption in Sumatra, possibly causing volcanic winter",
+      "impact": "Global cooling, possible human population bottleneck",
+      "magnitude": "VEI 8",
+      "coordinates": {
+        "lat": 2.68,
+        "lon": 98.88
+      }
+    },
+    {
+      "year": -14700,
+      "name": "Bolling-Allerod Warming",
+      "type": "climate",
+      "description": "Rapid warming event marking start of deglaciation",
+      "impact": "Global temperatures rose 3-4C in decades",
+      "magnitude": null,
+      "coordinates": null
+    },
+    {
+      "year": -12900,
+      "name": "Younger Dryas Onset",
+      "type": "climate",
+      "description": "Sudden return to glacial conditions",
+      "impact": "Northern Hemisphere cooling of 2-6C",
+      "magnitude": null,
+      "coordinates": null
+    },
+    {
+      "year": -11700,
+      "name": "Younger Dryas End",
+      "type": "climate",
+      "description": "Abrupt warming ending the last ice age",
+      "impact": "Temperature rose 10C in decades in some regions",
+      "magnitude": null,
+      "coordinates": null
+    },
+    {
+      "year": -8200,
+      "name": "8.2 Kiloyear Event",
+      "type": "climate",
+      "description": "Sudden cooling event caused by glacial lake outburst",
+      "impact": "Global cooling of 1-5C for 400 years",
+      "magnitude": null,
+      "coordinates": null
+    },
+    {
+      "year": -7600,
+      "name": "Black Sea Flood",
+      "type": "geological",
+      "description": "Mediterranean water breached into freshwater Black Sea lake",
+      "impact": "Rapid sea level rise in Black Sea basin",
+      "magnitude": null,
+      "coordinates": {
+        "lat": 43.0,
+        "lon": 35.0
+      }
+    },
+    {
+      "year": -6200,
+      "name": "Storegga Slide",
+      "type": "geological",
+      "description": "Massive submarine landslide off Norway",
+      "impact": "Tsunami up to 25m affecting North Sea coasts",
+      "magnitude": null,
+      "coordinates": {
+        "lat": 64.0,
+        "lon": 3.0
+      }
+    }
+  ],
+  "land_bridges": [
+    {
+      "name": "Beringia",
+      "description": "Land bridge connecting Asia to Americas",
+      "exposed_years": [-70000, -11000],
+      "coordinates": {
+        "lat": 65.0,
+        "lon": -168.0
+      },
+      "max_width_km": 1600,
+      "significance": "Route for human migration to Americas"
+    },
+    {
+      "name": "Doggerland",
+      "description": "Land bridge connecting Britain to Europe",
+      "exposed_years": [-120000, -8000],
+      "coordinates": {
+        "lat": 55.0,
+        "lon": 2.0
+      },
+      "max_width_km": 200,
+      "significance": "Mesolithic human habitation site"
+    },
+    {
+      "name": "Sundaland",
+      "description": "Exposed continental shelf in Southeast Asia",
+      "exposed_years": [-120000, -10000],
+      "coordinates": {
+        "lat": 2.0,
+        "lon": 110.0
+      },
+      "max_width_km": 1800,
+      "significance": "Connected Indonesian islands, human migration route"
+    },
+    {
+      "name": "Sahul",
+      "description": "Combined Australia-New Guinea landmass",
+      "exposed_years": [-120000, -8000],
+      "coordinates": {
+        "lat": -8.0,
+        "lon": 140.0
+      },
+      "max_width_km": 800,
+      "significance": "Aboriginal migration and habitation"
+    }
+  ],
+  "ice_sheets": [
+    {
+      "name": "Laurentide Ice Sheet",
+      "description": "Massive ice sheet covering Canada and northern US",
+      "peak_year": -20000,
+      "peak_area_km2": 13000000,
+      "peak_thickness_m": 3500,
+      "center_coordinates": {
+        "lat": 55.0,
+        "lon": -90.0
+      }
+    },
+    {
+      "name": "Fennoscandian Ice Sheet",
+      "description": "Ice sheet covering Scandinavia and northern Europe",
+      "peak_year": -20000,
+      "peak_area_km2": 6700000,
+      "peak_thickness_m": 3000,
+      "center_coordinates": {
+        "lat": 65.0,
+        "lon": 20.0
+      }
+    },
+    {
+      "name": "British-Irish Ice Sheet",
+      "description": "Ice sheet covering British Isles",
+      "peak_year": -22000,
+      "peak_area_km2": 840000,
+      "peak_thickness_m": 1500,
+      "center_coordinates": {
+        "lat": 57.0,
+        "lon": -5.0
+      }
+    },
+    {
+      "name": "Cordilleran Ice Sheet",
+      "description": "Ice sheet covering western North American mountains",
+      "peak_year": -20000,
+      "peak_area_km2": 2500000,
+      "peak_thickness_m": 2500,
+      "center_coordinates": {
+        "lat": 55.0,
+        "lon": -125.0
+      }
+    }
+  ]
+}
