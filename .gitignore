@@ -29,6 +29,7 @@ Thumbs.db
 *.tiff
 assets/textures/*.jpg
 assets/heightmaps/*.png
+# Note: Generated textures are excluded - run scripts/fetch_paleoclimate_data.py to generate them
 
 # Logs
 *.log

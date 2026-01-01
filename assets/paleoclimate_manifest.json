@@ -1,0 +1,205 @@
+{
+  "version": "1.0.0",
+  "generated_at": "2026-01-01T16:58:52.728844Z",
+  "description": "Paleoclimate textures for Earth Reconstruction Framework",
+  "data_sources": [
+    {
+      "name": "NASA Blue Marble",
+      "url": "https://visibleearth.nasa.gov/collection/1484/blue-marble",
+      "license": "Public Domain",
+      "usage": "Base texture for present-day Earth"
+    },
+    {
+      "name": "NOAA Paleoclimatology",
+      "url": "https://www.ncei.noaa.gov/products/paleoclimatology",
+      "license": "Public Domain",
+      "usage": "Ice core and paleoclimate data reference"
+    }
+  ],
+  "time_periods": [
+    {
+      "id": "present",
+      "name": "Present Day",
+      "years_bp": 0,
+      "description": "Modern Earth as observed by NASA satellites",
+      "avg_temp_offset": 0.0,
+      "sea_level_offset": 0,
+      "ice_coverage": 0.1
+    },
+    {
+      "id": "holocene_optimum",
+      "name": "Holocene Climatic Optimum",
+      "years_bp": 6000,
+      "description": "Warm period ~6,000 years ago with slightly higher temperatures",
+      "avg_temp_offset": 0.5,
+      "sea_level_offset": 2,
+      "ice_coverage": 0.08
+    },
+    {
+      "id": "younger_dryas",
+      "name": "Younger Dryas",
+      "years_bp": 12000,
+      "description": "Cold snap ~12,000 years ago, abrupt return to glacial conditions",
+      "avg_temp_offset": -4.0,
+      "sea_level_offset": -60,
+      "ice_coverage": 0.2
+    },
+    {
+      "id": "lgm",
+      "name": "Last Glacial Maximum",
+      "years_bp": 21000,
+      "description": "Peak of the last ice age ~21,000 years ago",
+      "avg_temp_offset": -6.0,
+      "sea_level_offset": -120,
+      "ice_coverage": 0.3
+    },
+    {
+      "id": "mis3",
+      "name": "Marine Isotope Stage 3",
+      "years_bp": 40000,
+      "description": "Interstadial period ~40,000 years ago, milder glacial conditions",
+      "avg_temp_offset": -3.0,
+      "sea_level_offset": -80,
+      "ice_coverage": 0.18
+    },
+    {
+      "id": "eemian",
+      "name": "Eemian Interglacial",
+      "years_bp": 125000,
+      "description": "Last interglacial ~125,000 years ago, warmer than present",
+      "avg_temp_offset": 1.5,
+      "sea_level_offset": 6,
+      "ice_coverage": 0.05
+    },
+    {
+      "id": "penultimate_glacial",
+      "name": "Penultimate Glacial Maximum",
+      "years_bp": 150000,
+      "description": "Second-to-last glacial maximum ~150,000 years ago",
+      "avg_temp_offset": -5.5,
+      "sea_level_offset": -110,
+      "ice_coverage": 0.28
+    }
+  ],
+  "textures": [
+    {
+      "period_id": "present",
+      "filename": "earth_present_2k.jpg",
+      "path": "assets/textures/earth_present_2k.jpg",
+      "resolution": "2k",
+      "size_bytes": 87892,
+      "md5": "28629033d7c54ebe1a06e645d812e6a9",
+      "generated_at": "2026-01-01T16:58:51.247103Z"
+    },
+    {
+      "period_id": "holocene_optimum",
+      "filename": "earth_holocene_optimum_2k.jpg",
+      "path": "assets/textures/earth_holocene_optimum_2k.jpg",
+      "resolution": "2k",
+      "size_bytes": 91283,
+      "md5": "35d9e93dad143ce36da55fe8a7723960",
+      "generated_at": "2026-01-01T16:58:51.622034Z"
+    },
+    {
+      "period_id": "younger_dryas",
+      "filename": "earth_younger_dryas_2k.jpg",
+      "path": "assets/textures/earth_younger_dryas_2k.jpg",
+      "resolution": "2k",
+      "size_bytes": 97057,
+      "md5": "7706aa641a91df3eea834b34b7be2b1b",
+      "generated_at": "2026-01-01T16:58:51.854256Z"
+    },
+    {
+      "period_id": "lgm",
+      "filename": "earth_lgm_2k.jpg",
+      "path": "assets/textures/earth_lgm_2k.jpg",
+      "resolution": "2k",
+      "size_bytes": 95555,
+      "md5": "e99d0869fc25b234247b02bc528f1a1a",
+      "generated_at": "2026-01-01T16:58:52.169043Z"
+    },
+    {
+      "period_id": "mis3",
+      "filename": "earth_mis3_2k.jpg",
+      "path": "assets/textures/earth_mis3_2k.jpg",
+      "resolution": "2k",
+      "size_bytes": 89234,
+      "md5": "23368e46f6b0530a8cb95976c2aa5532",
+      "generated_at": "2026-01-01T16:58:52.362691Z"
+    },
+    {
+      "period_id": "eemian",
+      "filename": "earth_eemian_2k.jpg",
+      "path": "assets/textures/earth_eemian_2k.jpg",
+      "resolution": "2k",
+      "size_bytes": 89548,
+      "md5": "db8200d690dbfc95b59d9208dc55d617",
+      "generated_at": "2026-01-01T16:58:52.569744Z"
+    },
+    {
+      "period_id": "penultimate_glacial",
+      "filename": "earth_penultimate_glacial_2k.jpg",
+      "path": "assets/textures/earth_penultimate_glacial_2k.jpg",
+      "resolution": "2k",
+      "size_bytes": 103741,
+      "md5": "9f78f7b38186470aeae211f834c0112d",
+      "generated_at": "2026-01-01T16:58:52.717597Z"
+    }
+  ],
+  "ice_core_data": [
+    {
+      "years_bp": 0,
+      "temp_anomaly": 0.0,
+      "co2_ppm": 280
+    },
+    {
+      "years_bp": 10000,
+      "temp_anomaly": -0.5,
+      "co2_ppm": 260
+    },
+    {
+      "years_bp": 20000,
+      "temp_anomaly": -6.0,
+      "co2_ppm": 185
+    },
+    {
+      "years_bp": 40000,
+      "temp_anomaly": -4.0,
+      "co2_ppm": 210
+    },
+    {
+      "years_bp": 60000,
+      "temp_anomaly": -5.5,
+      "co2_ppm": 195
+    },
+    {
+      "years_bp": 80000,
+      "temp_anomaly": -4.5,
+      "co2_ppm": 220
+    },
+    {
+      "years_bp": 100000,
+      "temp_anomaly": -5.0,
+      "co2_ppm": 230
+    },
+    {
+      "years_bp": 125000,
+      "temp_anomaly": 1.5,
+      "co2_ppm": 290
+    },
+    {
+      "years_bp": 150000,
+      "temp_anomaly": -5.5,
+      "co2_ppm": 200
+    }
+  ],
+  "metadata": {
+    "texture_format": "JPEG",
+    "projection": "equirectangular",
+    "coordinate_system": "WGS84",
+    "time_range": {
+      "min_years_bp": 0,
+      "max_years_bp": 150000
+    }
+  }
+}
