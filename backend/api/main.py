@@ -12,12 +12,17 @@ Features:
 from fastapi import FastAPI, HTTPException, Query, Path
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, Response
 from pydantic import BaseModel, Field, field_validator
 from typing import Optional, List, Dict, Any, Literal
 from enum import Enum
 import os
 import json
+import httpx
+import logging
+from datetime import datetime, timedelta
+
+logger = logging.getLogger(__name__)
 
 # Import processing module
 import sys
@@ -36,19 +41,23 @@ app = FastAPI(
     redoc_url="/redoc",
 )
 
-# CORS for frontend
+# Get allowed origins from environment, with safe defaults for development
+ALLOWED_ORIGINS = os.getenv("ALLOWED_ORIGINS", "").split(",") if os.getenv("ALLOWED_ORIGINS") else [
+    "http://localhost:3000",
+    "http://localhost:3333",
+    "http://localhost:5173",
+    "http://localhost:8080",
+    "http://127.0.0.1:3000",
+    "http://127.0.0.1:3333",
+    "http://127.0.0.1:5173",
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:3000",
-        "http://localhost:5173",
-        "http://localhost:8080",
-        "http://127.0.0.1:3000",
-        "http://127.0.0.1:5173",
-    ],
+    allow_origins=ALLOWED_ORIGINS,
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST", "OPTIONS"],
+    allow_headers=["Content-Type", "Authorization"],
 )
 
 # Directories
@@ -62,7 +71,7 @@ if os.path.exists(STATIC_DIR):
     app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 
 # Constants
-MIN_YEAR = -500000
+MIN_YEAR = -5000000
 MAX_YEAR = 0
 VALID_RESOLUTIONS = ["low", "medium", "high", "ultra"]
 
@@ -242,11 +251,12 @@ async def http_exception_handler(request, exc: HTTPException):
 @app.exception_handler(ValueError)
 async def value_error_handler(request, exc: ValueError):
     """Handle value errors"""
+    logger.warning(f"Value error: {str(exc)}")
     return JSONResponse(
         status_code=400,
         content={
             "error": "ValueError",
-            "detail": str(exc),
+            "detail": "Invalid input provided",
             "status_code": 400
         }
     )
@@ -313,7 +323,7 @@ async def get_earth_state(
     Get Earth's climate state for a given year.
 
     Uses cubic spline interpolation by default for smooth transitions between
-    known data points. Supports range from -500,000 to 0 (present).
+    known data points. Supports range from -5,000,000 to 0 (present).
 
     **Interpolation Methods:**
     - `cubic_spline`: Smooth C2 continuous interpolation (default)
@@ -324,6 +334,9 @@ async def get_earth_state(
     - `/api/earth/state/0` - Present day
     - `/api/earth/state/-20000` - Last Glacial Maximum
     - `/api/earth/state/-130000` - Eemian Interglacial
+    - `/api/earth/state/-2600000` - Onset of Ice Ages (Pleistocene)
+    - `/api/earth/state/-3500000` - Mid-Pliocene Warm Period
+    - `/api/earth/state/-5000000` - Early Pliocene
     """
     validate_year(year)
 
@@ -350,9 +363,10 @@ async def get_earth_state(
             heightmap_url=heightmap_url,
         )
     except Exception as e:
+        logger.error(f"Error interpolating climate state: {str(e)}")
         raise HTTPException(
             status_code=500,
-            detail=f"Error interpolating climate state: {str(e)}"
+            detail="Failed to process climate data"
         )
 
 
@@ -380,9 +394,10 @@ async def get_rate_of_change(
             ice_pct_per_century=round(rates["ice_pct_per_year"] * 100, 4),
         )
     except Exception as e:
+        logger.error(f"Error calculating rate of change: {str(e)}")
         raise HTTPException(
             status_code=500,
-            detail=f"Error calculating rate of change: {str(e)}"
+            detail="Failed to calculate rate of change"
         )
 
 
@@ -606,9 +621,9 @@ async def get_ice_sheets():
 
 @app.get("/api/timeline", tags=["Time Periods"])
 async def get_timeline(
-    start_year: int = Query(-500000, description="Start year for timeline"),
+    start_year: int = Query(-5000000, description="Start year for timeline"),
     end_year: int = Query(0, description="End year for timeline"),
-    step: int = Query(10000, description="Year step for timeline points"),
+    step: int = Query(50000, description="Year step for timeline points"),
     method: InterpolationMethodEnum = Query(
         InterpolationMethodEnum.CUBIC_SPLINE,
         description="Interpolation method"
@@ -673,9 +688,10 @@ async def get_timeline(
             "timeline": timeline,
         }
     except Exception as e:
+        logger.error(f"Error generating timeline: {str(e)}")
         raise HTTPException(
             status_code=500,
-            detail=f"Error generating timeline: {str(e)}"
+            detail="Failed to generate timeline"
         )
 
 
@@ -739,8 +755,323 @@ def get_period_name(year: int) -> str:
         return f"Early Holocene ({abs(year):,} years ago)"
     elif year >= -130000:
         return f"Late Pleistocene ({abs(year):,} years ago)"
-    else:
+    elif year >= -800000:
         return f"Middle Pleistocene ({abs(year):,} years ago)"
+    elif year >= -2600000:
+        return f"Early Pleistocene ({abs(year):,} years ago)"
+    elif year >= -5300000:
+        return f"Pliocene ({abs(year):,} years ago)"
+    else:
+        return f"Late Miocene ({abs(year):,} years ago)"
+
+
+# ============================================================================
+# Storm Data Endpoints
+# ============================================================================
+
+from .storms import storm_manager, initialize_storm_data
+
+@app.on_event("startup")
+async def load_storm_data():
+    """Load storm data on startup"""
+    await initialize_storm_data()
+
+
+@app.get("/api/storms/notable", tags=["Storms"])
+async def get_notable_storms():
+    """
+    Get list of notable/famous historical storms.
+
+    Returns storms like Hurricane Katrina, Sandy, Maria, Typhoon Haiyan, etc.
+    """
+    storms = storm_manager.get_notable_storms()
+    return {"notable_storms": storms, "count": len(storms)}
+
+
+@app.get("/api/storms/years", tags=["Storms"])
+async def get_available_storm_years():
+    """
+    Get list of years with available storm data.
+    """
+    years = storm_manager.get_available_years()
+    return {"years": years, "count": len(years)}
+
+
+@app.get("/api/storms/year/{year}", tags=["Storms"])
+async def get_storms_by_year(
+    year: int = Path(..., description="Year to get storms for (e.g., 2005, 2017)")
+):
+    """
+    Get all storms for a specific year.
+
+    Returns all tropical cyclones that occurred in the given year across all basins.
+    """
+    storms = storm_manager.get_storms_by_year(year)
+    return {"year": year, "storms": storms, "count": len(storms)}
+
+
+@app.get("/api/storms/basin/{basin}", tags=["Storms"])
+async def get_storms_by_basin(
+    basin: str = Path(..., description="Basin code: NA (Atlantic), EP (East Pacific), WP (West Pacific), NI (North Indian), SI (South Indian), SP (South Pacific)")
+):
+    """
+    Get all storms for a specific ocean basin.
+
+    Basin codes:
+    - NA: North Atlantic
+    - EP: Eastern Pacific
+    - WP: Western Pacific
+    - NI: North Indian Ocean
+    - SI: South Indian Ocean
+    - SP: South Pacific
+    """
+    storms = storm_manager.get_storms_by_basin(basin)
+    return {"basin": basin.upper(), "storms": storms, "count": len(storms)}
+
+
+@app.get("/api/storms/at-time", tags=["Storms"])
+async def get_storms_at_time(
+    datetime_str: str = Query(..., description="ISO datetime string (e.g., '2005-08-29T12:00:00')"),
+    hours_window: int = Query(6, description="Hours before/after to search")
+):
+    """
+    Get all storms active at a specific date/time.
+
+    Useful for the timeline playback feature to show storms at any point in history.
+    """
+    from datetime import datetime
+    try:
+        dt = datetime.fromisoformat(datetime_str.replace('Z', '+00:00'))
+    except ValueError:
+        raise HTTPException(status_code=400, detail="Invalid datetime format. Use ISO format.")
+
+    storms = storm_manager.get_storms_at_time(dt, hours_window)
+    return {"datetime": datetime_str, "storms": storms, "count": len(storms)}
+
+
+@app.get("/api/storms/search", tags=["Storms"])
+async def search_storms(
+    name: str = Query(..., min_length=2, description="Storm name to search for")
+):
+    """
+    Search storms by name.
+
+    Example: `/api/storms/search?name=katrina`
+    """
+    storms = storm_manager.search_storms(name)
+    return {"query": name, "storms": storms, "count": len(storms)}
+
+
+@app.get("/api/storms/{storm_id}", tags=["Storms"])
+async def get_storm_details(
+    storm_id: str = Path(..., description="IBTrACS storm ID (e.g., '2005236N23285' for Katrina)")
+):
+    """
+    Get detailed information about a specific storm including full track data.
+
+    Track data includes position, wind speed, pressure, and category at each time point.
+    """
+    storm = storm_manager.get_storm(storm_id)
+    if not storm:
+        raise HTTPException(status_code=404, detail=f"Storm {storm_id} not found")
+    return storm
+
+
+# ============================================================================
+# Weather Data Proxy Endpoints (bypass CORS)
+# ============================================================================
+
+# Cache for weather data
+_weather_cache = {
+    "rainviewer": {"data": None, "timestamp": None},
+    "radar_images": {}
+}
+CACHE_DURATION = timedelta(minutes=5)
+
+
+@app.get("/api/weather/rainviewer", tags=["Weather"])
+async def get_rainviewer_data():
+    """
+    Proxy for RainViewer API - provides global radar and satellite data.
+
+    Returns radar and satellite timestamps for tile fetching.
+    """
+    cache = _weather_cache["rainviewer"]
+
+    # Check cache
+    if cache["data"] and cache["timestamp"]:
+        if datetime.now() - cache["timestamp"] < CACHE_DURATION:
+            return cache["data"]
+
+    try:
+        async with httpx.AsyncClient() as client:
+            response = await client.get(
+                "https://api.rainviewer.com/public/weather-maps.json",
+                timeout=10.0
+            )
+            response.raise_for_status()
+            data = response.json()
+
+            # Cache the result
+            _weather_cache["rainviewer"] = {
+                "data": data,
+                "timestamp": datetime.now()
+            }
+
+            return data
+    except Exception as e:
+        logger.error(f"Failed to fetch RainViewer data: {str(e)}")
+        raise HTTPException(status_code=502, detail="Failed to fetch weather data")
+
+
+@app.get("/api/weather/radar/image", tags=["Weather"])
+async def proxy_radar_image(
+    url: str = Query(..., description="Full URL of the radar/satellite image to proxy")
+):
+    """Proxy radar/satellite images from RainViewer to avoid CORS issues"""
+    from urllib.parse import urlparse
+
+    # Strict URL validation
+    allowed_hosts = ["tilecache.rainviewer.com", "api.rainviewer.com"]
+
+    try:
+        parsed = urlparse(url)
+    except Exception:
+        raise HTTPException(status_code=400, detail="Invalid URL format")
+
+    # Validate scheme
+    if parsed.scheme not in ["http", "https"]:
+        raise HTTPException(status_code=400, detail="Only HTTP/HTTPS URLs are allowed")
+
+    # Validate hostname exactly (case-insensitive)
+    if parsed.hostname and parsed.hostname.lower() not in allowed_hosts:
+        raise HTTPException(status_code=400, detail="Only RainViewer URLs are allowed")
+
+    # Reject URLs with credentials
+    if parsed.username or parsed.password:
+        raise HTTPException(status_code=400, detail="URLs with credentials are not allowed")
+
+    # Reject unusual ports
+    if parsed.port and parsed.port not in [80, 443, None]:
+        raise HTTPException(status_code=400, detail="Non-standard ports are not allowed")
+
+    try:
+        async with httpx.AsyncClient() as client:
+            response = await client.get(url, timeout=10.0, follow_redirects=False)
+            response.raise_for_status()
+
+            # Validate content type
+            content_type = response.headers.get("content-type", "")
+            if not content_type.startswith("image/"):
+                raise HTTPException(status_code=400, detail="Response is not an image")
+
+            # Limit response size (10MB max)
+            content_length = response.headers.get("content-length")
+            if content_length and int(content_length) > 10 * 1024 * 1024:
+                raise HTTPException(status_code=413, detail="Image too large")
+
+            return Response(
+                content=response.content,
+                media_type=content_type,
+                headers={"Cache-Control": "public, max-age=300"}
+            )
+    except httpx.TimeoutException:
+        raise HTTPException(status_code=504, detail="Request timed out")
+    except httpx.HTTPStatusError:
+        raise HTTPException(status_code=502, detail="Failed to fetch image")
+    except Exception:
+        raise HTTPException(status_code=500, detail="An error occurred while fetching the image")
+
+
+@app.get("/api/weather/satellite/gibs", tags=["Weather"])
+async def get_gibs_cloud_url():
+    """
+    Get NASA GIBS satellite imagery URL for today/yesterday.
+
+    Returns URLs for VIIRS and MODIS cloud imagery.
+    """
+    today = datetime.now()
+    yesterday = today - timedelta(days=1)
+    two_days_ago = today - timedelta(days=2)
+
+    def format_date(d):
+        return d.strftime("%Y-%m-%d")
+
+    return {
+        "viirs_today": f"https://gibs.earthdata.nasa.gov/wms/epsg4326/best/wms.cgi?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image/png&TRANSPARENT=true&LAYERS=VIIRS_SNPP_CorrectedReflectance_TrueColor&CRS=EPSG:4326&STYLES=&WIDTH=2048&HEIGHT=1024&BBOX=-90,-180,90,180&TIME={format_date(yesterday)}",
+        "viirs_yesterday": f"https://gibs.earthdata.nasa.gov/wms/epsg4326/best/wms.cgi?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image/png&TRANSPARENT=true&LAYERS=VIIRS_SNPP_CorrectedReflectance_TrueColor&CRS=EPSG:4326&STYLES=&WIDTH=2048&HEIGHT=1024&BBOX=-90,-180,90,180&TIME={format_date(two_days_ago)}",
+        "modis_terra": f"https://gibs.earthdata.nasa.gov/wms/epsg4326/best/wms.cgi?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image/png&TRANSPARENT=true&LAYERS=MODIS_Terra_CorrectedReflectance_TrueColor&CRS=EPSG:4326&STYLES=&WIDTH=2048&HEIGHT=1024&BBOX=-90,-180,90,180&TIME={format_date(yesterday)}",
+        "dates": {
+            "today": format_date(today),
+            "yesterday": format_date(yesterday),
+            "two_days_ago": format_date(two_days_ago)
+        }
+    }
+
+
+@app.get("/api/weather/earthquakes", tags=["Weather"])
+async def get_earthquakes(
+    min_magnitude: str = Query("2.5", description="Minimum magnitude: all, 1.0, 2.5, 4.5, significant"),
+    timeframe: str = Query("day", description="Timeframe: hour, day, week, month")
+):
+    """
+    Proxy for USGS earthquake data.
+
+    Returns earthquakes from USGS with full details.
+    """
+    valid_magnitudes = ["all", "1.0", "2.5", "4.5", "significant"]
+    valid_timeframes = ["hour", "day", "week", "month"]
+
+    if min_magnitude not in valid_magnitudes:
+        raise HTTPException(status_code=400, detail=f"Invalid magnitude. Use: {valid_magnitudes}")
+    if timeframe not in valid_timeframes:
+        raise HTTPException(status_code=400, detail=f"Invalid timeframe. Use: {valid_timeframes}")
+
+    feed = f"{min_magnitude}_{timeframe}"
+    url = f"https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/{feed}.geojson"
+
+    try:
+        async with httpx.AsyncClient() as client:
+            response = await client.get(url, timeout=15.0)
+            response.raise_for_status()
+            return response.json()
+    except Exception as e:
+        logger.error(f"Failed to fetch earthquake data: {str(e)}")
+        raise HTTPException(status_code=502, detail="Failed to fetch earthquake data")
+
+
+@app.get("/api/weather/fires", tags=["Weather"])
+async def get_active_fires():
+    """
+    Get active fire data from NASA FIRMS.
+
+    Returns recent fire detections globally.
+    """
+    # NASA FIRMS provides fire data - this returns a summary
+    # Full API requires an API key, but we can return the public feed URL
+    return {
+        "source": "NASA FIRMS",
+        "feed_url": "https://firms.modaps.eosdis.nasa.gov/active_fire/",
+        "kml_url": "https://firms.modaps.eosdis.nasa.gov/active_fire/kml/Global_24h.kml",
+        "note": "For full API access, register at https://firms.modaps.eosdis.nasa.gov/api/",
+        "description": "Active fire detections from MODIS and VIIRS satellites"
+    }
+
+
+@app.get("/api/weather/ocean/sst", tags=["Weather"])
+async def get_sea_surface_temperature():
+    """
+    Get sea surface temperature data URLs.
+
+    Returns URLs for SST imagery from NOAA.
+    """
+    return {
+        "source": "NOAA Coral Reef Watch",
+        "global_sst": "https://coralreefwatch.noaa.gov/data/5km/v3.1/current/daily/sst/night/",
+        "anomaly": "https://coralreefwatch.noaa.gov/data/5km/v3.1/current/daily/ssta/",
+        "gibs_sst": "https://gibs.earthdata.nasa.gov/wms/epsg4326/best/wms.cgi?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image/png&TRANSPARENT=true&LAYERS=GHRSST_L4_MUR_Sea_Surface_Temperature&CRS=EPSG:4326&STYLES=&WIDTH=2048&HEIGHT=1024&BBOX=-90,-180,90,180",
+        "description": "Global sea surface temperature data"
+    }
 
 
 # ============================================================================
