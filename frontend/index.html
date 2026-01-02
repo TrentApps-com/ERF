@@ -2,59 +2,54 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <!-- Security Headers -->
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  <meta http-equiv="X-Frame-Options" content="DENY">
+  <meta http-equiv="Content-Security-Policy" content="
+        default-src 'self';
+        script-src 'self' 'unsafe-inline' blob:;
+        style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+        font-src 'self' https://fonts.gstatic.com;
+        img-src 'self' data: https: blob:;
+        connect-src 'self' http://localhost:* https://api.rainviewer.com https://tilecache.rainviewer.com https://earthquake.usgs.gov;
+        worker-src 'self' blob:;
+        frame-ancestors 'none';
+    ">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ERF - Earth Reconstruction Framework</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-    body {
-      overflow: hidden;
-      background: #000;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    }
-    #globe-container {
-      width: 100vw;
-      height: 100vh;
-    }
-    #controls {
-      position: fixed;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: rgba(0, 0, 0, 0.7);
-      padding: 20px 40px;
-      border-radius: 12px;
-      color: white;
-      z-index: 100;
-      backdrop-filter: blur(10px);
-    }
-    #timeline {
-      width: 400px;
-      margin-bottom: 10px;
-    }
-    #year-display {
-      text-align: center;
-      font-size: 1.2em;
-      font-weight: bold;
-    }
-    #loading {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      color: white;
-      font-size: 1.5em;
-    }
-  </style>
+  <meta name="description" content="Interactive 3D visualization of Earth's climate history over 5 million years">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <!-- External Stylesheet -->
+  <link rel="stylesheet" href="/src/styles.css">
 </head>
 <body>
-  <div id="loading">Loading Earth...</div>
+  <div id="loading">
+    <span id="loading-text">Initializing Earth</span>
+  </div>
+
+  <!-- Cinematic vignette effect -->
+  <div id="vignette-overlay"></div>
+
+  <!-- Elegant title -->
+  <div id="title-overlay">
+    <h1>Earth Through Time</h1>
+    <div class="subtitle">750 Million Years of Continental Drift</div>
+  </div>
+
+  <!-- Epoch indicator (top right) -->
+  <div id="epoch-indicator">
+    <div class="epoch-name" id="epoch-name">Holocene</div>
+    <div class="epoch-era" id="epoch-era">Cenozoic Era</div>
+  </div>
+
   <div id="globe-container"></div>
   <div id="controls">
-    <input type="range" id="timeline" min="-500000" max="0" value="0" step="1000">
+    <input type="range" id="timeline" min="-5000000" max="0" value="0" step="1000">
     <div id="year-display">Present Day</div>
   </div>
   <script type="module" src="/src/main.js"></script>
